@@ -25,6 +25,7 @@ dotenv.config();
 const ASSETS = {
   USDC: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
   USDT: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+  UXD: "7kbnvuGBxxj8AG9qp8Scn56muWGaRaFqxg1FsRp3PaFT",
   UST: "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
   WSOL: "So11111111111111111111111111111111111111112",
   MSOL: "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
@@ -34,17 +35,22 @@ const ASSETS = {
   BTC: "9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E",
   RAY: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
   SAMO: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+  GARI: "CKaKtYvz6dKPyMvYq9Rh3UBrnNqYZAyd7iF4hJtjUvks",
+  USDCet: "A9mUU4qviSctJVPJdBJWkb28deg915LYJKrzQ19ji3FM",
+  SRM: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+  GST: "AFbX8oGjGpmVFywbVouvhQSRmiW2aR1mohfahi4Y2AdB",
+  GMT: "7i5KKsX2weiTkry7jA4ZwSuXGhs5eJBEjY8vVxR4pfRx"
 };
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-const ENDPOINT = process.env.ENDPOINT;
+const ENDPOINT = 'https://solana-mainnet.g.alchemy.com/v2/Yta2zNlN0Ix2-iecpAMizFwvhmpSp9x4';
 
 const ASSET_MINT = ASSETS[arg2] || ASSETS.BTC;
 
 const QUOTE_MINT = ASSETS[arg3] || ASSETS.USDC;
 
-const PROFITABILITY_THRESHOLD = 1.0023;
+const PROFITABILITY_THRESHOLD = 1.00189;
 
 const DECIMAL_CUTTER = 10 ** 6;
 
@@ -173,7 +179,7 @@ while (true) {
     new PublicKey(quoteAddress)
   );
   // const initial = tokenAccountBalance.value.amount;
-  const initial = 20_000_000;
+  const initial = 88_000_000;
 
   const buyRoute = await getCoinQuote(QUOTE_MINT, ASSET_MINT, initial).then(
     (res) => res.data[0]
@@ -189,6 +195,7 @@ while (true) {
     sellRoute.outAmountWithSlippage >
     buyRoute.inAmount * PROFITABILITY_THRESHOLD;
 
+/*
   console.log(
     `
     Asset: ${arg2}
@@ -202,11 +209,12 @@ while (true) {
     <--------------------------------------------------->
   `
   );
-
+*/
   // when outAmount more than initial
   if (isProfitable) {
+    console.log(`Attemping ${arg2} ${arg3} for ${initial}`)
     await Promise.all(
-      [buyRoute, sellRoute].forEach(async (route) => {
+      [buyRoute, sellRoute].map(async (route) => {
         const { setupTransaction, swapTransaction, cleanupTransaction } =
           await getTransaction(route);
 
